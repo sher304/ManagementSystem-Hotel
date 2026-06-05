@@ -37,16 +37,20 @@ class DepartmentService {
         return repository.fetchAll()
     }
 
-    // TODO: Complete METHODS
-    public func getStaffCount() -> Int {
-        return 1
+    public func getStaffCount(department: Department) -> Int {
+        return department.employees.count
     }
     
-    public func updateBudget(value: Double) {
-        
+    public func updateBudget(department: Department, newBudget: Double) {
+        department.budget = newBudget
+        repository.saveChanges()
+        print("\(department.title) budget successfully updated to \(newBudget).")
     }
     
-    public func endSeason() -> Bool {
+    public func endSeason(for department: Department) -> Bool {
+        department.budget = 0.0
+        repository.saveChanges()
+        print("Season ended for \(department.title). Budget reset.")
         return true
     }
 }
