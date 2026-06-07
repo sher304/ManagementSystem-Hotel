@@ -40,7 +40,7 @@ struct HotelManagementSystemApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DeveloperSettingsView()
         }
         .modelContainer(sharedModelContainer)
     }

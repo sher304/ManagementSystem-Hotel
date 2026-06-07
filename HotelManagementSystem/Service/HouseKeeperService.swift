@@ -32,7 +32,11 @@ class HouseKeeperService {
         
         var houseKeeper = Housekeeper(assignedFloor: assignedFloor, hireDate: hireDate,
                                       languages: languages, person: person)
-        epmloyeeService.addNewEmployee(employee: houseKeeper)
+        epmloyeeService.addNewEmployee(pesel: pesel, employee: houseKeeper)
+        houseKeeper.hireDate = hireDate
+        houseKeeper.languages = languages
+        houseKeeper.person = person
+        epmloyeeService.saveChanges()
         print("Housekeepr created")
         return houseKeeper
     }

@@ -10,12 +10,12 @@ import SwiftData
 
 @Model
 class Employee {
-    var hireDate: Date
+    var hireDate: Date = Date()
     var terminDate: Date?
-    var languages: [String]
+    var languages: [String] = []
     var baseMinimumSalary: Double = 52.0
     
-    var person: Person
+    var person: Person?
     
     @Relationship(deleteRule: .nullify, inverse: \Inventory.employee)
     var employeeItems: [Inventory] = []

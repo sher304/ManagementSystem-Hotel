@@ -33,19 +33,19 @@ class ReservationService {
     }
 
     public func confirmCheckIn(for reservation: Reservation) {
-        reservation.room.status = .booked
+        reservation.room?.status = .booked
         repository.saveChanges()
-        print("Check-in confirmed for Room \(reservation.room.number).")
+        print("Check-in confirmed for Room \(reservation.room?.number).")
     }
     
     public func checkOut(for reservation: Reservation) {
-        reservation.room.status = .cleaning
+        reservation.room?.status = .cleaning
         repository.saveChanges()
-        print("Check-out complete. Room \(reservation.room.number) now requires cleaning.")
+        print("Check-out complete. Room \(reservation.room?.number) now requires cleaning.")
     }
     
     public func cancel(reservation: Reservation) {
-        reservation.room.status = .free
+        reservation.room?.status = .free
         repository.delete(reservation)
         print("Reservation has been cancelled and the room is free.")
     }

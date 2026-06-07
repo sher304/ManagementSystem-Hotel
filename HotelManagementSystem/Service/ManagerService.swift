@@ -35,8 +35,11 @@ class ManagerService {
         
         let newManager = Manager(certificates: certificates, hireDate: hireDate,
                                  languages: languages, person: person)
-        
-        employeeService.addNewEmployee(employee: newManager)
+        employeeService.addNewEmployee(pesel: pesel, employee: newManager)
+        newManager.hireDate = hireDate
+        newManager.languages = languages
+        newManager.person = person
+        employeeService.saveChanges()
         print("Successfully created a new Manager profile!")
         return newManager
     }
@@ -56,7 +59,7 @@ class ManagerService {
         employee.department = department
         
         departmentRepository.saveChanges()
-        print("Successfully assigned \(employee.person.firstName) to \(departmentTitle).")
+        print("Successfully assigned \(employee.person?.firstName) to \(departmentTitle).")
     }
     
     

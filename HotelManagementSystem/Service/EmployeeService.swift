@@ -38,7 +38,7 @@ class EmployeeService {
     
     public func getEmployee(pesel: String) -> Employee? {
         return repository.fetchAll().first { employee in
-            employee.person.pesel == pesel
+            employee.person?.pesel == pesel
         }
     }
     
@@ -60,7 +60,7 @@ class EmployeeService {
             return
         }
         
-        if date < employee.hireDate {
+        if date < employee.hireDate ?? Date() {
             print("Hire date has to be less than termin date")
             return
         }
@@ -76,15 +76,15 @@ class EmployeeService {
             return nil
         }
         
-        let startDate = employee.hireDate
+        let startDate = employee.hireDate ?? Date()
         let endDate = employee.terminDate ?? Date()
         let components = Calendar.current.dateComponents([.year], from: startDate, to: endDate)
         return components.year ?? 0
     }
     
-    public func addNewEmployee(employee: Employee) {
-        personService.setEmployeeRole(pesel: employee.person.pesel, employee: employee)
+    public func addNewEmployee(pesel: String, employee: Employee) {
         repository.add(employee)
+        personService.setEmployeeRole(pesel: pesel, employee: employee)
     }
     
     public func saveChanges() {

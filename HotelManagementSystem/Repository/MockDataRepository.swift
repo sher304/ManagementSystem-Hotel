@@ -9,63 +9,105 @@ import Foundation
 import SwiftData
 
 class MockDataRepository {
+    private let hotelService: HotelService
+    private let roomService: RoomService
+    private let departmentService: DepartmentService
+    private let facilityService: FacilityService
+    private let personService: PersonService
+    private let managerService: ManagerService
+    private let receptionistService: ReceptioinistService
+    private let housekeeperService: HouseKeeperService
+    private let customerService: CustomerService
+    private let reservationService: ReservationService
+    private let paymentService: PaymentService
+    private let securityService: SecurityService
+    private var context: ModelContext
     
-    @MainActor
-    static func seedInitialData(context: ModelContext) {
-        let hotelDescriptor = FetchDescriptor<Hotel>()
-        let existingHotels = (try? context.fetch(hotelDescriptor)) ?? []
-        
-        if !existingHotels.isEmpty {
-            print("Database already has data. Skipping seed.")
+    init(context: ModelContext) {
+        self.hotelService = HotelService(context: context)
+        self.roomService = RoomService(context: context)
+        self.departmentService = DepartmentService(context: context)
+        self.facilityService = FacilityService(context: context)
+        self.personService = PersonService(context: context)
+        self.managerService = ManagerService(context: context)
+        self.receptionistService = ReceptioinistService(context: context)
+        self.housekeeperService = HouseKeeperService(context: context)
+        self.customerService = CustomerService(context: context)
+        self.reservationService = ReservationService(context: context)
+        self.paymentService = PaymentService(context: context)
+        self.securityService = SecurityService(context: context)
+        self.context = context
+    }
+    
+    public func seedDatabase() {
+        if !hotelService.getAllHotels().isEmpty {
+            print("Database is already seeded. Skipping mock data generation.")
             return
         }
         
-        print("Seeding initial database records...")
+        print("--- STARTING DATABASE SEED ---")
         
-        let mainHotel = Hotel(
-            title: "The Grand Warsaw",
-            address: "Złota 44, Warsaw",
-            starRating: 5.0,
+        guard let grandHotel = hotelService.createHotel(
+            title: "Grand Warsaw Hotel",
+            address: "Marszałkowska 1, Warsaw",
+            capacity: 500,
             totalFloors: 10,
-            checkInTime: Date(),
+            starRating: 5.0,
             checkOutTime: Date(),
-            maximumCapacity: 500,
-            description: "Luxury hotel in the heart of the city."
-        )
-        context.insert(mainHotel)
+            checkInTime: Date(),
+            description: "Luxury hotel in the heart of the city.",
+            maximumCapacity: 1000,
+            firstRoomNumber: 101,
+            firstRoomCapacity: 2
+        ) else { return }
         
-        let fitnessDept = Department(title: "Health & Wellness", floor: 2, budget: 15000.0)
-        context.insert(fitnessDept)
+        hotelService.createNewRoom(hotel: grandHotel, roomNumber: 102, floor: 1, capacity: 2)
+        let room201 = hotelService.createNewRoom(hotel: grandHotel, roomNumber: 201, floor: 2, capacity: 4)
         
-        let poolFacility = Facility(title: "Indoor Heated Pool", maxCapacity: 50, openingHours: Date(), department: fitnessDept)
-        context.insert(poolFacility)
+        var managment = departmentService.createDepartment(title: "Management", floor: 10, budget: 50000.0)!
+        var fronDesk = departmentService.createDepartment(title: "Front Desk", floor: 1, budget: 15000.0)!
+        var houseKeeping = departmentService.createDepartment(title: "Housekeeping", floor: -1, budget: 20000.0)!
         
-        let room101 = Room(number: 101, floor: 1, lastCleanedDate: Date(), smokeAllowed: false, capacity: 2, description: "Standard Queen", status: .free, hotel: mainHotel)
-        let room102 = Room(number: 102, floor: 1, lastCleanedDate: Date(), smokeAllowed: false, capacity: 4, description: "Family Suite", status: .free, hotel: mainHotel)
-        let room103 = Room(number: 103, floor: 1, lastCleanedDate: Date(), smokeAllowed: false, capacity: 2, description: "Standard Queen", status: .booked, hotel: mainHotel)
+        _ = facilityService.createFacility(title: "Pool", maximumCapacity: 120, openingHours: Date(), dept: managment)
+        _ = facilityService.createFacility(title: "BellBoy", maximumCapacity: 120, openingHours: Date(), dept: fronDesk)
+        _ = facilityService.createFacility(title: "House party", maximumCapacity: 120, openingHours: Date(), dept: houseKeeping)
         
-        context.insert(room101)
-        context.insert(room102)
-        context.insert(room103)
+        let dateOfBirth = Calendar.current.date(byAdding: .year, value: -30, to: Date()) ?? Date()
+        let hireDate = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         
-        let johnPerson = Person(pesel: "90010112345", firstName: "John", lastName: "Doe", phoneNumber: "555-0101", email: "john@example.com", dateOfBirth: Date())
-        let janePerson = Person(pesel: "85020298765", firstName: "Jane", lastName: "Smith", phoneNumber: "555-0202", email: "jane@example.com", dateOfBirth: Date())
+        _ = personService.createPerson(pesel: "90051412345", firstName: "Anna", lastName: "Nowak", phoneNumber: "555-0100", email: "anna@hotel.pl", dateOfBirth: dateOfBirth)
+        _ = personService.createPerson(pesel: "95082154321", firstName: "Jan", lastName: "Kowalski", phoneNumber: "555-0101", email: "jan@hotel.pl", dateOfBirth: dateOfBirth)
+        _ = personService.createPerson(pesel: "88010199999", firstName: "Maria", lastName: "Wisniewska", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth)
         
-        context.insert(johnPerson)
-        context.insert(janePerson)
+        _ = managerService.createManager(pesel: "90051412345", baseMinimumSalary: 8000.0, hireDate: hireDate, languages: ["Polish", "English", "German"], certificates: ["MBA", "Hospitality Management"])
+        _ = receptionistService.createReceptionist(pesel: "95082154321", hireDate: hireDate, deskNumber: 1, baseMinimumSalary: 4500.0, languages: ["Polish", "English"])
+        _ = housekeeperService.createHouseKeeper(pesel: "88010199999", assignedFloor: 2, hireDate: hireDate, languages: ["Polish", "Ukrainian"])
         
-        let johnCustomer = Customer(loayltyPoints: 1500, person: johnPerson)
-        context.insert(johnCustomer)
+        managerService.assignEmployeeToDepartment(pesel: "90051412345", departmentTitle: "Management")
+        managerService.assignEmployeeToDepartment(pesel: "95082154321", departmentTitle: "Front Desk")
+        managerService.assignEmployeeToDepartment(pesel: "88010199999", departmentTitle: "Housekeeping")
         
-        let janeManager = Manager(certificates: ["Advanced Hospitality"], hireDate: Date(), languages: ["English", "Polish"], person: janePerson)
-        janeManager.department = fitnessDept
-        context.insert(janeManager)
+        if let nightWatch = securityService.createSecurity(groupAmount: 4, postLocation: "Main Lobby", shiftStart: Date(), shiftEnd: Date(), description: "Night Shift Patrol", phoneNumber: "800-999-1111") {
+            hotelService.addSecurity(hotel: grandHotel, security: nightWatch)
+        }
         
-        do {
-            try context.save()
-            print("Successfully seeded the database!")
-        } catch {
-            print("Failed to seed database: \(error)")
+        _ = personService.createPerson(pesel: "99022877777", firstName: "Tomasz", lastName: "Lewandowski", phoneNumber: "555-0200", email: "tomasz@guest.pl", dateOfBirth: dateOfBirth)
+        guard let customer = customerService.createCustomer(pesel: "99022877777") else { return }
+        
+        let checkInDate = Date()
+        let checkOutDate = Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
+        
+        if let room = room201, let reservation = reservationService.createReservation(customer: customer, room: room, checkIn: checkInDate, checkOut: checkOutDate, cancelReason: nil) {
+            
+            reservationService.confirmCheckIn(for: reservation)
+            
+            let amountDue = reservationService.totalPrice(for: reservation)
+            paymentService.makeFullPayment(reservation: reservation, amount: amountDue, method: "Credit Card")
+        }
+        
+        print("--- DATABASE SEED COMPLETE ---")
+        if let url = context.container.configurations.first?.url.path(percentEncoded: false) {
+            print("🎯 REAL DATABASE URL: \(url)")
         }
     }
 }

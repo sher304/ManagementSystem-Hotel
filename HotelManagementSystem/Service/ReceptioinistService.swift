@@ -38,8 +38,11 @@ class ReceptioinistService {
                                            hireDate: hireDate,
                                            languages: languages,
                                            person: person)
-        
-        employeeService.addNewEmployee(employee: newReceptionist)        
+        employeeService.addNewEmployee(pesel: pesel, employee: newReceptionist)
+        newReceptionist.hireDate = hireDate
+        newReceptionist.languages = languages
+        newReceptionist.person = person
+        employeeService.saveChanges()
         print("Successfully created Receptionist profile.")
         return newReceptionist
     }
@@ -55,13 +58,13 @@ class ReceptioinistService {
     }
         
     public func processCheckIn(reservation: Reservation) {
-        reservation.room.status = .booked
+        reservation.room?.status = .booked
         reservationRepository.saveChanges()
         print("Check-in processed successfully. Room locked.")
     }
     
     public func processCheckOut(reservation: Reservation) {
-        reservation.room.status = .cleaning
+        reservation.room?.status = .cleaning
         customerService.updatePoints(customer: reservation.customer, points: 100)
     
         reservationRepository.saveChanges()
@@ -69,7 +72,7 @@ class ReceptioinistService {
     }
     
     public func cancelCheckIn(reservation: Reservation) {
-        reservation.room.status = .free
+        reservation.room?.status = .free
         reservationRepository.delete(reservation)
         print("Reservation cancelled and room freed.")
     }

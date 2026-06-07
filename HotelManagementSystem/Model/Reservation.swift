@@ -16,7 +16,7 @@ class Reservation {
     var checkOutDate: Date
     var cancelReason:String?
     
-    var room: Room
+    var room: Room?
     var customer: Customer
     
     @Relationship(inverse: \Payment.reservation)

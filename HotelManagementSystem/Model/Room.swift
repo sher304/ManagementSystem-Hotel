@@ -22,7 +22,7 @@ class Room {
     
     var hotel: Hotel
     
-    @Relationship(inverse: \Reservation.room)
+    @Relationship(deleteRule: .cascade, inverse: \Reservation.room)
     var reservations: [Reservation] = []
     
     init(number: Int, floor: Int, lastCleanedDate: Date, smokeAllowed: Bool,
