@@ -12,6 +12,7 @@ struct BookingDetailView: View {
     var bookingViewModel: BookingListViewModel
     var reservation: Reservation
     @Environment(\.dismiss) var dismiss
+    @State private var showSuccessScreen = false
     
     var body: some View {
         ScrollView {
@@ -60,6 +61,7 @@ struct BookingDetailView: View {
                 
                 Button(action: {
                     receptionistViewModel.confirmCheckIn(reservation: reservation)
+                    showSuccessScreen = true
                 }) {
                     Text("Confirm Check In")
                         .frame(maxWidth: .infinity)
@@ -82,5 +84,8 @@ struct BookingDetailView: View {
             .padding()
         }
         .navigationTitle("Booking Detail")
+        .navigationDestination(isPresented: $showSuccessScreen) {
+            CheckInSuccessView()
+        }
     }
 }
