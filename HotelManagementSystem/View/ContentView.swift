@@ -12,11 +12,19 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     
     var body: some View {
-        SearchCustomerView(context: context)
-            .onAppear {
-                let seeder = MockDataRepository(context: context)
-                seeder.seedDatabase()
-            }
+        TabView {
+            SearchCustomerView(context: context)
+                .tabItem {
+                    Label("Reception", systemImage: "bell.fill")
+                }
+            ManagerDashboardView(context: context)
+                .tabItem {
+                    Label("Manager", systemImage: "briefcase.fill")
+                }
+        }.onAppear {
+            let seeder = MockDataRepository(context: context)
+            seeder.seedDatabase()
+        }
     }
 }
 

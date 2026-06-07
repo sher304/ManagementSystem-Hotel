@@ -20,6 +20,8 @@ class Person {
     var email: String
     var dateOfBirth: Date
     
+    var password: String
+    
     @Relationship(deleteRule: .cascade, inverse: \Employee.person)
     var employee: Employee?
     
@@ -27,13 +29,15 @@ class Person {
     var customer: Customer?
     
     init(pesel: String, firstName: String, lastName: String,
-         phoneNumber: String, email: String, dateOfBirth: Date) {
+         phoneNumber: String, email: String, dateOfBirth: Date,
+         password: String) {
         self.pesel = pesel
         self.firstName = firstName
         self.lastName = lastName
         self.phoneNumber = phoneNumber
         self.email = email
         self.dateOfBirth = dateOfBirth
+        self.password = password
     }
     
     public func setCustomerRole(customer: Customer) {

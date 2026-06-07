@@ -12,9 +12,12 @@ class ManagerService {
     private let departmentRepository: BaseRepository<Department>
     private let employeeService: EmployeeService
     private let personService: PersonService
+    private let managerRepository: BaseRepository<Manager>
+
     
     init(context: ModelContext) {
         self.departmentRepository = BaseRepository<Department>(context: context)
+        self.managerRepository = BaseRepository<Manager>(context: context)
         self.employeeService = EmployeeService(context: context)
         self.personService = PersonService(context: context)
     }
@@ -35,11 +38,8 @@ class ManagerService {
         
         let newManager = Manager(certificates: certificates, hireDate: hireDate,
                                  languages: languages, person: person)
-        employeeService.addNewEmployee(pesel: pesel, employee: newManager)
-        newManager.hireDate = hireDate
-        newManager.languages = languages
-        newManager.person = person
-        employeeService.saveChanges()
+        managerRepository.add(newManager)
+        personService.setEmployeeRole(pesel: pesel, employee: newManager)
         print("Successfully created a new Manager profile!")
         return newManager
     }

@@ -18,7 +18,7 @@ class BaseRepository<T: PersistentModel> {
     
     func add(_ item: T) {
         context.insert(item)
-        saveChanges()
+//        saveChanges()
     }
     
     func fetchAll() -> [T] {

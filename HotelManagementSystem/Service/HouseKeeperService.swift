@@ -9,11 +9,13 @@ import Foundation
 import SwiftData
 
 class HouseKeeperService {
+    private let houseKeeperRepository: BaseRepository<Housekeeper>
     private let roomService: RoomService
     private let personService: PersonService
     private let epmloyeeService: EmployeeService
     
     init(context: ModelContext) {
+        self.houseKeeperRepository = BaseRepository<Housekeeper>(context: context)
         self.personService = PersonService(context: context)
         self.epmloyeeService = EmployeeService(context: context)
         self.roomService = RoomService(context: context)
@@ -32,11 +34,9 @@ class HouseKeeperService {
         
         var houseKeeper = Housekeeper(assignedFloor: assignedFloor, hireDate: hireDate,
                                       languages: languages, person: person)
-        epmloyeeService.addNewEmployee(pesel: pesel, employee: houseKeeper)
-        houseKeeper.hireDate = hireDate
-        houseKeeper.languages = languages
-        houseKeeper.person = person
-        epmloyeeService.saveChanges()
+
+        houseKeeperRepository.add(houseKeeper)
+        personService.setEmployeeRole(pesel: pesel, employee: houseKeeper)
         print("Housekeepr created")
         return houseKeeper
     }

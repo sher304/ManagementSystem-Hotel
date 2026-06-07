@@ -28,5 +28,4 @@ class Employee {
         self.person = person
     }
     
-    // TODO: TERMIN DATE LOGIC HANDLE
 }

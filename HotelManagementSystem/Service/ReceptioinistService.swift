@@ -13,10 +13,12 @@ class ReceptioinistService {
     private let reservationRepository: BaseRepository<Reservation>
     private let personService: PersonService
     private let employeeService: EmployeeService
+    private let receptionistRepository: BaseRepository<Receptionist>
     
     init(context: ModelContext) {
         self.customerService = CustomerService(context: context)
         self.reservationRepository = BaseRepository<Reservation>(context: context)
+        self.receptionistRepository = BaseRepository<Receptionist>(context: context)
         self.employeeService = EmployeeService(context: context)
         self.personService = PersonService(context: context)
     }
@@ -38,11 +40,8 @@ class ReceptioinistService {
                                            hireDate: hireDate,
                                            languages: languages,
                                            person: person)
-        employeeService.addNewEmployee(pesel: pesel, employee: newReceptionist)
-        newReceptionist.hireDate = hireDate
-        newReceptionist.languages = languages
-        newReceptionist.person = person
-        employeeService.saveChanges()
+        receptionistRepository.add(newReceptionist)
+        personService.setEmployeeRole(pesel: pesel, employee: newReceptionist)
         print("Successfully created Receptionist profile.")
         return newReceptionist
     }

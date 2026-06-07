@@ -60,13 +60,13 @@ class PersonService {
     
     func createPerson(pesel: String, firstName: String,
                       lastName: String, phoneNumber: String,
-                      email: String, dateOfBirth: Date) -> Person? {
+                      email: String, dateOfBirth: Date, password: String) -> Person? {
         if getPerson(pesel: pesel) != nil {
             print("Person with this PESEL is already exists")
             return nil
         }
         
-        let newPerson = Person(pesel: pesel, firstName: firstName, lastName: lastName, phoneNumber: phoneNumber, email: email, dateOfBirth: dateOfBirth)
+        let newPerson = Person(pesel: pesel, firstName: firstName, lastName: lastName, phoneNumber: phoneNumber, email: email, dateOfBirth: dateOfBirth, password: password)
         
         repository.add(newPerson)
         return newPerson
@@ -74,7 +74,7 @@ class PersonService {
     
     public func update(pesel: String, firstName: String?,
                 lastName: String?, phoneNumber: String?,
-                email: String?, dateOfBirth: Date?) {
+                       email: String?, dateOfBirth: Date?, password: String?) {
         guard let person = getPerson(pesel: pesel) else {
             print("Error: Person with PESEL \(pesel) not found.")
             return
@@ -85,6 +85,7 @@ class PersonService {
         if let phoneNumber { person.phoneNumber = phoneNumber }
         if let email { person.email = email }
         if let dateOfBirth { person.dateOfBirth = dateOfBirth }
+        if let password { person.password = password }
         
         repository.saveChanges()
         

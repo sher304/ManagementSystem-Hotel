@@ -21,6 +21,7 @@ class MockDataRepository {
     private let reservationService: ReservationService
     private let paymentService: PaymentService
     private let securityService: SecurityService
+    private let employeeService: EmployeeService
     private var context: ModelContext
     
     init(context: ModelContext) {
@@ -36,6 +37,7 @@ class MockDataRepository {
         self.reservationService = ReservationService(context: context)
         self.paymentService = PaymentService(context: context)
         self.securityService = SecurityService(context: context)
+        self.employeeService = EmployeeService(context: context)
         self.context = context
     }
     
@@ -49,13 +51,13 @@ class MockDataRepository {
         
         guard let grandHotel = hotelService.createHotel(
             title: "Grand Warsaw Hotel",
-            address: "Marszałkowska 1, Warsaw",
+            address: "Marszalkowska 1, Warsaw",
             capacity: 500,
             totalFloors: 10,
             starRating: 5.0,
             checkOutTime: Date(),
             checkInTime: Date(),
-            description: "Luxury hotel in the heart of the city.",
+            description: "Luxury hotel",
             maximumCapacity: 1000,
             firstRoomNumber: 101,
             firstRoomCapacity: 2
@@ -81,24 +83,51 @@ class MockDataRepository {
         let dateOfBirth = Calendar.current.date(byAdding: .year, value: -30, to: Date()) ?? Date()
         let hireDate = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         
-        _ = personService.createPerson(pesel: "90051412345", firstName: "Anna", lastName: "Nowak", phoneNumber: "555-0100", email: "anna@hotel.pl", dateOfBirth: dateOfBirth)
-        _ = personService.createPerson(pesel: "95082154321", firstName: "Jan", lastName: "Kowalski", phoneNumber: "555-0101", email: "jan@hotel.pl", dateOfBirth: dateOfBirth)
-        _ = personService.createPerson(pesel: "88010199999", firstName: "Maria", lastName: "Wisniewska", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth)
+        let annaPerson = personService.createPerson(pesel: "190", firstName: "Anna", lastName: "Nora", phoneNumber: "555-0100", email: "anna@hotel.pl", dateOfBirth: dateOfBirth, password: "1")
         
-        _ = managerService.createManager(pesel: "90051412345", baseMinimumSalary: 8000.0, hireDate: hireDate, languages: ["Polish", "English", "German"], certificates: ["MBA", "Hospitality Management"])
-        _ = receptionistService.createReceptionist(pesel: "95082154321", hireDate: hireDate, deskNumber: 1, baseMinimumSalary: 4500.0, languages: ["Polish", "English"])
-        _ = housekeeperService.createHouseKeeper(pesel: "88010199999", assignedFloor: 2, hireDate: hireDate, languages: ["Polish", "Ukrainian"])
+        let bobPerson = personService.createPerson(pesel: "191", firstName: "Bob", lastName: "Kowalski", phoneNumber: "555-0101", email: "bob@hotel.pl", dateOfBirth: dateOfBirth, password: "2")
         
-        managerService.assignEmployeeToDepartment(pesel: "90051412345", departmentTitle: "Management")
-        managerService.assignEmployeeToDepartment(pesel: "95082154321", departmentTitle: "Front Desk")
-        managerService.assignEmployeeToDepartment(pesel: "88010199999", departmentTitle: "Housekeeping")
+        let mariaPerson = personService.createPerson(pesel: "192", firstName: "Maria", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let johnPerson = personService.createPerson(pesel: "193", firstName: "John", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let porkPerson = personService.createPerson(pesel: "194", firstName: "Sam", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let bananaPerson = personService.createPerson(pesel: "195", firstName: "Lia", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let orangePerson = personService.createPerson(pesel: "196", firstName: "Mia", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let bluePerson = personService.createPerson(pesel: "197", firstName: "Fia", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let greenPerson = personService.createPerson(pesel: "198", firstName: "Toyota", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let purplePerson = personService.createPerson(pesel: "199", firstName: "Kacepr", lastName: "Obart", phoneNumber: "555-0102", email: "maria@hotel.pl", dateOfBirth: dateOfBirth, password: "3")
+        
+        let brownManager = managerService.createManager(pesel: "180", baseMinimumSalary: 8000.0, hireDate: hireDate, languages: ["Polish", "English", "German"], certificates: ["MBA", "Hospitality Management"])
+        
+        _ = employeeService.createEmployee(pesel: "193", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "194", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "195", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "196", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "197", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "198", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        _ = employeeService.createEmployee(pesel: "199", hireDate: hireDate, languages: ["Polish", "English", "German"])
+        
+        let bobReceptionist = receptionistService.createReceptionist(pesel: "191", hireDate: hireDate, deskNumber: 1, baseMinimumSalary: 4500.0, languages: ["Polish", "English"])
+        
+        let mariaHousekeeper = housekeeperService.createHouseKeeper(pesel: "192", assignedFloor: 2, hireDate: hireDate, languages: ["Polish", "Ukrainian"])
+        
+        managerService.assignEmployeeToDepartment(pesel: "190", departmentTitle: "Management")
+        managerService.assignEmployeeToDepartment(pesel: "191", departmentTitle: "Front Desk")
+        managerService.assignEmployeeToDepartment(pesel: "192", departmentTitle: "Housekeeping")
         
         if let nightWatch = securityService.createSecurity(groupAmount: 4, postLocation: "Main Lobby", shiftStart: Date(), shiftEnd: Date(), description: "Night Shift Patrol", phoneNumber: "800-999-1111") {
             hotelService.addSecurity(hotel: grandHotel, security: nightWatch)
         }
         
-        _ = personService.createPerson(pesel: "99022877777", firstName: "Tomasz", lastName: "Lewandowski", phoneNumber: "555-0200", email: "tomasz@guest.pl", dateOfBirth: dateOfBirth)
-        guard let customer = customerService.createCustomer(pesel: "99022877777") else { return }
+        let tomaszPerson = personService.createPerson(pesel: "205", firstName: "Robert", lastName: "Lewandowski", phoneNumber: "555-0200", email: "robert@gmail.pl", dateOfBirth: dateOfBirth, password: "202")
+        
+        guard let customer = customerService.createCustomer(pesel: "193") else { return }
         
         let checkInDate = Date()
         let checkOutDate = Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()

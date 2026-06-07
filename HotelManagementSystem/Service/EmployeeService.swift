@@ -84,7 +84,6 @@ class EmployeeService {
     
     public func addNewEmployee(pesel: String, employee: Employee) {
         repository.add(employee)
-        personService.setEmployeeRole(pesel: pesel, employee: employee)
     }
     
     public func saveChanges() {
