@@ -177,13 +177,14 @@ class MockDataRepository {
         } catch {
             print("Failed to update customer: \(error)")
         }
-        overlapTest()
+//        overlapTest()
+//        testAggregationDelete()
     }
     
     public func overlapTest() {
         print("--- STARTING OVERLAP TEST VIA SERVICES ---")
         
-        let testPesel = "99988877766"
+        let testPesel = "99988123123877766"
         guard let newPerson = personService.createPerson(
             pesel: testPesel,
             firstName: "Anna",
@@ -211,6 +212,32 @@ class MockDataRepository {
             print("both a Manager and Customer.")
         } else {
             print("Overlap creation failed")
+        }
+    }
+    
+    public func testAggregationDelete() {
+        print("--- STARTING AGGREGATION TES ---")
+        let testPesel = "11221231233344556"
+        let deptTitle = "Luxury 2 FOUR Spa"
+        
+        var detpTest = departmentService.createDepartment(title: deptTitle, floor: 5, budget: 50.5)
+        guard let person = personService.createPerson(pesel: testPesel, firstName: "Jan", lastName: "Kowalski", phoneNumber: "000", email: "jan@test.com", dateOfBirth: Date(), password: "123") else { return }
+        
+        let newEmployee = Employee(hireDate: Date(), languages: ["English"], person: person)
+        employeeService.addNewEmployee(pesel: testPesel, employee: newEmployee)
+        
+        managerService.assignEmployeeToDepartment(pesel: testPesel, departmentTitle: deptTitle)
+        print("Created Employee and assigned to \(deptTitle).")
+        
+        departmentService.deleteDepartment(department: detpTest!)
+        print("Deleted the \(deptTitle) department.")
+        
+        if let survivingEmployee = employeeService.getEmployee(pesel: testPesel) {
+            if survivingEmployee.department == nil {
+                print("SUCCESS: Employee exists: department is now nil")
+            } else {
+                print("FAIL: Employee is still attached to the deleted department.")
+            }
         }
     }
 }

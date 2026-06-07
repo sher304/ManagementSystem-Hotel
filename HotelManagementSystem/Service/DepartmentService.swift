@@ -53,4 +53,11 @@ class DepartmentService {
         print("Season ended for \(department.title). Budget reset.")
         return true
     }
+    
+    public func deleteDepartment(department: Department) {
+        let title = department.title
+        
+        repository.delete(department)
+        print("Successfully deleted the \(title) department All assigned employees are now unassigned.")
+    }
 }
