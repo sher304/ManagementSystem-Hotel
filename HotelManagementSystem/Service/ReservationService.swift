@@ -32,13 +32,13 @@ class ReservationService {
         return newReservation
     }
 
-    public func confirmCheckIn(for reservation: Reservation) {
+    public func confirmCheckIn(reservation: Reservation) {
         reservation.room?.status = .booked
         repository.saveChanges()
         print("Check-in confirmed for Room \(reservation.room?.number).")
     }
     
-    public func checkOut(for reservation: Reservation) {
+    public func checkOut(reservation: Reservation) {
         reservation.room?.status = .cleaning
         repository.saveChanges()
         print("Check-out complete. Room \(reservation.room?.number) now requires cleaning.")
@@ -51,7 +51,7 @@ class ReservationService {
     }
     
     public func isFullPaid(reservation: Reservation) -> Bool {
-        let totalCost: Double = totalPrice(for: reservation)
+        let totalCost: Double = totalPrice(reservation: reservation)
         let nonRefundedPayments: [Payment] = reservation.payment.filter { $0.status != .refunded }
         let totalPaid: Double = nonRefundedPayments.reduce(0.0) { (sum: Double, payment: Payment) -> Double in
             return sum + payment.paymentAmount
@@ -59,7 +59,7 @@ class ReservationService {
         return totalPaid >= totalCost
     }
     
-    public func totalPrice(for reservation: Reservation) -> Double {
+    public func totalPrice(reservation: Reservation) -> Double {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: reservation.checkInDate, to: reservation.checkOutDate)
         let nights = max(1, components.day ?? 1)

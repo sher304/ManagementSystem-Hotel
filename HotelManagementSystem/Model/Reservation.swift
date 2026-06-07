@@ -15,7 +15,6 @@ class Reservation {
     var checkInDate: Date
     var checkOutDate: Date
     var cancelReason:String?
-    
     var room: Room?
     var customer: Customer
     

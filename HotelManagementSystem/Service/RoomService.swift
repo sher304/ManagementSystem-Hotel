@@ -22,7 +22,7 @@ class RoomService {
         }
     }
     
-    public func createRoom(hotel: Hotel, roomNumber: Int, floor: Int, capacity: Int) -> Room? {
+    public func createRoom(hotel: Hotel, roomNumber: Int, floor: Int, capacity: Int, imageName: String) -> Room? {
         if getRoom(roomNumber: roomNumber) != nil {
             print("Room \(roomNumber) already exists.")
             return nil
@@ -36,7 +36,8 @@ class RoomService {
             capacity: capacity,
             description: "Standard Room",
             status: .free,
-            hotel: hotel
+            hotel: hotel,
+            imageName: imageName
         )
         
         repository.add(newRoom)

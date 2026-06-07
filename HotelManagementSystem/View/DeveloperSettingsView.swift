@@ -49,7 +49,7 @@ struct DeveloperSettingsView: View {
                 .padding(.horizontal, 40)
                 
                 if didSeedData {
-                    Text("✅ Database Successfully Seeded!")
+                    Text("Database Successfully Seeded!")
                         .foregroundColor(.green)
                         .fontWeight(.semibold)
                 }

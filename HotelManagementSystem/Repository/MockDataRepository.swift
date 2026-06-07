@@ -61,8 +61,14 @@ class MockDataRepository {
             firstRoomCapacity: 2
         ) else { return }
         
-        hotelService.createNewRoom(hotel: grandHotel, roomNumber: 102, floor: 1, capacity: 2)
-        let room201 = hotelService.createNewRoom(hotel: grandHotel, roomNumber: 201, floor: 2, capacity: 4)
+        hotelService.createNewRoom(hotel: grandHotel, roomNumber: 102, floor: 1,
+                                   capacity: 2, imageName: "room6")
+        let room201 = hotelService.createNewRoom(hotel: grandHotel, roomNumber: 201,
+                                                 floor: 2, capacity: 4, imageName: "room1")
+        let room202 = hotelService.createNewRoom(hotel: grandHotel, roomNumber: 202,
+                                                 floor: 3, capacity: 4, imageName: "room2")
+        let room203 = hotelService.createNewRoom(hotel: grandHotel, roomNumber: 203,
+                                                 floor: 4, capacity: 4, imageName: "room3")
         
         var managment = departmentService.createDepartment(title: "Management", floor: 10, budget: 50000.0)!
         var fronDesk = departmentService.createDepartment(title: "Front Desk", floor: 1, budget: 15000.0)!
@@ -107,7 +113,7 @@ class MockDataRepository {
         
         print("--- DATABASE SEED COMPLETE ---")
         if let url = context.container.configurations.first?.url.path(percentEncoded: false) {
-            print("🎯 REAL DATABASE URL: \(url)")
+            print("DATABASE URL: \(url)")
         }
     }
 }

@@ -19,6 +19,7 @@ class Room {
     @Attribute(originalName: "description")
     var description_: String
     var status: RoomStatus
+    var imageName: String?
     
     var hotel: Hotel
     
@@ -27,7 +28,7 @@ class Room {
     
     init(number: Int, floor: Int, lastCleanedDate: Date, smokeAllowed: Bool,
          capacity: Int, description: String, status: RoomStatus,
-         hotel: Hotel) {
+         hotel: Hotel, imageName: String? = nil) {
         self.number = number
         self.floor = floor
         self.lastCleanedDate = lastCleanedDate
@@ -36,5 +37,6 @@ class Room {
         self.description_ = description
         self.status = status
         self.hotel = hotel
+        self.imageName = imageName
     }
 }

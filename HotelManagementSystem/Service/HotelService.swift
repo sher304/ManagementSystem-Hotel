@@ -55,12 +55,13 @@ class HotelService {
     }
 
     @discardableResult
-    public func createNewRoom(hotel: Hotel, roomNumber: Int, floor: Int, capacity: Int) -> Room? {
+    public func createNewRoom(hotel: Hotel, roomNumber: Int, floor: Int, capacity: Int, imageName: String) -> Room? {
         return roomService.createRoom(
             hotel: hotel,
             roomNumber: roomNumber,
             floor: floor,
-            capacity: capacity
+            capacity: capacity,
+            imageName: imageName
         )
     }
     
