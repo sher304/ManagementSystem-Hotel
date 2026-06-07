@@ -17,7 +17,6 @@ class PaymentService {
         self.repository = BaseRepository<Payment>(context: context)
     }
     
-    
     @discardableResult
     public func makeFullPayment(reservation: Reservation, amount: Double, method: String) -> Payment {
         let payment = Payment(date: Date(),

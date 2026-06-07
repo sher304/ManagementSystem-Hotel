@@ -105,9 +105,9 @@ class MockDataRepository {
         
         if let room = room201, let reservation = reservationService.createReservation(customer: customer, room: room, checkIn: checkInDate, checkOut: checkOutDate, cancelReason: nil) {
             
-            reservationService.confirmCheckIn(for: reservation)
+            reservationService.confirmCheckIn(reservation: reservation)
             
-            let amountDue = reservationService.totalPrice(for: reservation)
+            let amountDue = reservationService.totalPrice(reservation: reservation)
             paymentService.makeFullPayment(reservation: reservation, amount: amountDue, method: "Credit Card")
         }
         

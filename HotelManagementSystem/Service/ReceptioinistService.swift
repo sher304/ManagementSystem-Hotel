@@ -86,4 +86,11 @@ class ReceptioinistService {
         employeeService.deleteEmployee(employee: receptionist)
         print("Receptionist details successfully deleted.")
     }
+    
+    func calculateAge(customer: Customer) -> Int {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.year], from: customer.person.dateOfBirth, to: now)
+        return components.year ?? 0
+    }
 }

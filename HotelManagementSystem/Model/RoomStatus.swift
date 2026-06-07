@@ -8,7 +8,7 @@
 import Foundation
 
 enum RoomStatus: String, Codable {
-case free = "Free"
-case booked = "Booked"
-case cleaning = "Cleaning"
+    case free = "Free"
+    case booked = "Booked"
+    case cleaning = "Cleaning"
 }

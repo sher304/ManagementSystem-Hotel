@@ -12,4 +12,5 @@ enum PaymentStatus: String, Codable {
     case paid = "Paid"
     case failed = "Failed"
     case refunded = "Refunded"
+    case partial = "Partial"
 }

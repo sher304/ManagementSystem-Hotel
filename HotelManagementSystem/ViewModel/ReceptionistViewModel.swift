@@ -12,6 +12,7 @@ import SwiftData
 class ReceptionistViewModel {
     private let customerService: CustomerService
     private let reservationService: ReservationService
+    private let receptionistService: ReceptioinistService
     
     var searchPesel: String = ""
     var foundCustomer: Customer? = nil
@@ -23,6 +24,7 @@ class ReceptionistViewModel {
     init(context: ModelContext) {
         self.customerService = CustomerService(context: context)
         self.reservationService = ReservationService(context: context)
+        self.receptionistService = ReceptioinistService(context: context)
     }
     
     func searchForCustomer() {
@@ -43,8 +45,19 @@ class ReceptionistViewModel {
         self.navigateToResults = true
     }
     
+    func checkConfirmCheckIn(reservation: Reservation) -> Bool {
+        let isRoomReady = reservation.room?.status == .free || reservation.room?.status == .booked
+        let customer = reservation.customer.person.dateOfBirth
+        let isAdult = receptionistService.calculateAge(customer: reservation.customer) >= 18
+        let isPaid = reservationService.isFullPaid(reservation: reservation)
+        return isRoomReady && isAdult && isPaid
+    }
+    
     func confirmCheckIn(reservation: Reservation) {
-        reservationService.confirmCheckIn(reservation: reservation)
+        if checkConfirmCheckIn(reservation: reservation) {
+            reservationService.confirmCheckIn(reservation: reservation)
+            print("Check-in confirmed for Room \(reservation.room?.number ?? 0)")
+        }
     }
     
     func calculatePrice(for reservation: Reservation) -> Double {

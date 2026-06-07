@@ -63,7 +63,11 @@ struct SearchCustomerView: View {
             .navigationTitle("Search Customer")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $viewModel.navigateToResults) {
-                BookingListView(context: context, reservations: viewModel.activeReservations)
+                BookingListView(
+                        context: context,
+                        reservations: viewModel.activeReservations,
+                        receptionistViewModel: viewModel
+                    )
             }
         }
     }
