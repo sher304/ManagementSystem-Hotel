@@ -82,4 +82,17 @@ class HotelService {
         let unavailableRooms = hotelRooms.filter { $0.status != .free }.count
         return unavailableRooms
     }
+    
+    public func deleteHotel(name: String) {
+        guard let hotel = getAllHotels().first(where: { hotel in
+            hotel.title == name
+        }) else {
+            print("Hotel \(name) not found.")
+            return
+        }
+
+        repository.delete(hotel)
+        repository.saveChanges()
+        print("Successfully deleted the \(name) hotel. All associated rooms were destroyed.")
+    }
 }

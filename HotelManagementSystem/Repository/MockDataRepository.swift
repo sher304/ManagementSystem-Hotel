@@ -179,6 +179,7 @@ class MockDataRepository {
         }
 //        overlapTest()
 //        testAggregationDelete()
+//        testCompositionDelete()
     }
     
     public func overlapTest() {
@@ -238,6 +239,40 @@ class MockDataRepository {
             } else {
                 print("FAIL: Employee is still attached to the deleted department.")
             }
+        }
+    }
+    
+    public func testCompositionDelete() {
+        print("---STARTING COMPOSITION TEST ---")
+        
+        let targetHotelName = "Grand Warsaw Plaza 2"
+        let targetRoomNumber = 662
+    
+        guard let grandHotel = hotelService.createHotel(
+            title: targetHotelName,
+            address: "Marszalkowska 3, Warsaw",
+            capacity: 500,
+            totalFloors: 10,
+            starRating: 5.0,
+            checkOutTime: Date(),
+            checkInTime: Date(),
+            description: "Luxury 5 star hotel",
+            maximumCapacity: 1000,
+            firstRoomNumber: 101,
+            firstRoomCapacity: 2
+        ) else { return }
+        
+        _ = roomService.createRoom(hotel: grandHotel, roomNumber: targetRoomNumber, floor: 12, capacity: 22, imageName: "room2")
+        
+        print("Created Hotel and Room \(targetRoomNumber).")
+        
+        print("Deleting the Hotel")
+        hotelService.deleteHotel(name: targetHotelName)
+        let survivingRoom = roomService.getRoom(roomNumber: targetRoomNumber)
+        if survivingRoom == nil {
+            print("SUCCESS: Room \(targetRoomNumber) was completely deleted from the database")
+        } else {
+            print("FAIL: Room \(targetRoomNumber) survived")
         }
     }
 }
