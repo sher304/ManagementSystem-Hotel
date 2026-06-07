@@ -44,6 +44,7 @@ class MockDataRepository {
     public func seedDatabase() {
         if !hotelService.getAllHotels().isEmpty {
             print("Database is already seeded. Skipping mock data generation.")
+            makeSomeRequest()
             return
         }
         
@@ -143,6 +144,73 @@ class MockDataRepository {
         print("--- DATABASE SEED COMPLETE ---")
         if let url = context.container.configurations.first?.url.path(percentEncoded: false) {
             print("DATABASE URL: \(url)")
+        }
+    }
+    
+    public func makeSomeRequest() {
+        let fetcherRoom = FetchDescriptor<Room>()
+        do {
+            let rooms = try context.fetch(fetcherRoom)
+            var mostRoom: Room? = nil
+            var highetsRoom = 0
+            for room in rooms {
+                if room.reservations.count > highetsRoom {
+                    mostRoom = room
+                    highetsRoom = room.reservations.count
+                }
+            }
+            print(mostRoom?.number)
+        } catch {
+            print("FAILED TO FETCH RESERVATION")
+        }
+        
+        let fetcher = FetchDescriptor<Person>()
+        guard let people = try? context.fetch(fetcher),
+              let personToUpdate = people.first(where: { $0.pesel == "191" }) else {
+            print("Customer not found!")
+            return
+        }
+        personToUpdate.phoneNumber = "123123123"
+        do {
+            try context.save()
+            print("Successfully updated customer's phone number!")
+        } catch {
+            print("Failed to update customer: \(error)")
+        }
+        overlapTest()
+    }
+    
+    public func overlapTest() {
+        print("--- STARTING OVERLAP TEST VIA SERVICES ---")
+        
+        let testPesel = "99988877766"
+        guard let newPerson = personService.createPerson(
+            pesel: testPesel,
+            firstName: "Anna",
+            lastName: "Kowalska",
+            phoneNumber: "123456789",
+            email: "anna.k@hotel.com",
+            dateOfBirth: Date(),
+            password: "password123"
+        ) else {
+            print("Failed to create Person profile.")
+            return
+        }
+        
+        let manager = managerService.createManager(
+            pesel: testPesel,
+            baseMinimumSalary: 5200.0,
+            hireDate: Date(),
+            languages: ["Polish", "English"],
+            certificates: ["First Aid"]
+        )
+        
+        let customer = customerService.createCustomer(pesel: testPesel)
+        
+        if manager != nil && customer != nil {
+            print("both a Manager and Customer.")
+        } else {
+            print("Overlap creation failed")
         }
     }
 }
